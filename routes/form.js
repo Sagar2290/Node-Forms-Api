@@ -26,8 +26,8 @@ router.get("/", (req, res, next) => {
     .catch((err) => console.log(err));
 });
 
-router.post("/", (req, res, next) => {
-    console.log(req.body);
+router.post("/user", (req, res, next) => {
+  console.log(req.body);
   conn
     .connect()
     .then(() => {
@@ -48,14 +48,14 @@ router.post("/", (req, res, next) => {
       request.input("Corstate", sql.Int, req.body.Corstate);
       request.input("Corcity", sql.Int, req.body.Corcity);
       request.input("Corpincode", sql.Int, req.body.Corpincode);
-      request.output("error", sql.VarChar(500), '');
+      request.output("error", sql.VarChar(500), "");
 
       request
         .execute("UserAdd")
         .then((recordset) => {
-         console.log(recordset);
+          console.log(recordset);
           res.send(recordset.output);
-         
+
           conn.close();
         })
         .catch((err) => {
@@ -70,65 +70,84 @@ router.post("/", (req, res, next) => {
     });
 });
 
-
-router.post("/:id", (req, res, next) => {
+router.post("/post/:id", (req, res, next) => {
   console.log(req.body);
-conn
-  .connect()
-  .then(() => {
-    const request = new sql.Request(conn);
-    request.input("id", sql.VarChar(50), req.params.id);
-    // request.output("error", sql.VarChar(500), '');
+  conn
+    .connect()
+    .then(() => {
+      const request = new sql.Request(conn);
+      request.input("id", sql.VarChar(50), req.params.id);
+      // request.output("error", sql.VarChar(500), '');
 
-    request
-      .execute("search_new")
-      .then((recordset) => {
-       console.log(recordset);
-        res.send(recordset.recordset);
-       
-        conn.close();
-      })
-      .catch((err) => {
-        conn.close();
-        console.log(err);
-        res.send(err);
-      });
-  })
-  .catch((err) => {
-    conn.close();
-    res.status(400).send("Error while inserting data");
-  });
+      request
+        .execute("search_new")
+        .then((recordset) => {
+          console.log(recordset);
+          res.send(recordset.recordset);
+
+          conn.close();
+        })
+        .catch((err) => {
+          conn.close();
+          console.log(err);
+          res.send(err);
+        });
+    })
+    .catch((err) => {
+      conn.close();
+      res.status(400).send("Error while inserting data");
+    });
 });
 
-
-router.delete("/:id", (req, res, next) => {
+router.delete("/delete/:id", (req, res, next) => {
   console.log(req.body);
-conn
-  .connect()
-  .then(() => {
-    const request = new sql.Request(conn);
+  conn
+    .connect()
+    .then(() => {
+      const request = new sql.Request(conn);
       request.input("id", sql.Int, req.params.id);
-      request.input("name", sql.VarChar(50), '');
-    request.output("error", sql.VarChar(500), '');
+      request.input("name", sql.VarChar(50), "");
+      request.output("error", sql.VarChar(500), "");
 
-    request
-      .execute("Userdelete")
-      .then((recordset) => {
-       console.log(recordset);
-        res.send(recordset.recordset);
-       
-        conn.close();
-      })
-      .catch((err) => {
-        conn.close();
-        console.log(err);
-        res.send(err);
-      });
-  })
-  .catch((err) => {
-    conn.close();
-    res.status(400).send("Error while inserting data");
-  });
+      request
+        .execute("Userdelete")
+        .then((recordset) => {
+          console.log(recordset);
+          res.send(recordset.output);
+
+          conn.close();
+        })
+        .catch((err) => {
+          conn.close();
+          console.log(err);
+          res.send(err);
+        });
+    })
+    .catch((err) => {
+      conn.close();
+      res.status(400).send("Error while inserting data");
+    });
+});
+
+router.get("/static", (req, res, next) => {
+  conn
+    .connect()
+    .then(() => {
+      const req = new sql.Request(conn);
+      req
+        .execute("cscp")
+        .then((recordset) => {
+          res.send(recordset);
+          console.log(recordset);
+          conn.close();
+        })
+        .catch((err) => {
+          conn.close();
+          console.log(err);
+          res.send(err);
+        });
+    })
+    .catch((err) => console.log(err));
 });
 
 module.exports = router;
