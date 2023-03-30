@@ -70,17 +70,20 @@ router.post("/user", (req, res, next) => {
     });
 });
 
-router.post("/post/:id", (req, res, next) => {
+router.post("/search/:id", (req, res, next) => {
   console.log(req.body);
   conn
     .connect()
     .then(() => {
       const request = new sql.Request(conn);
-      request.input("id", sql.VarChar(50), req.params.id);
+      request.input("id", sql.Int, req.params.id);
+      request.input("name", sql.VarChar(50), '');
+      request.input("Mobile", sql.VarChar(50), '');
+      request.input("error", sql.VarChar(50), '');
       // request.output("error", sql.VarChar(500), '');
 
       request
-        .execute("search_new")
+        .execute("Usersearch")
         .then((recordset) => {
           console.log(recordset);
           res.send(recordset.recordset);
@@ -95,7 +98,7 @@ router.post("/post/:id", (req, res, next) => {
     })
     .catch((err) => {
       conn.close();
-      res.status(400).send("Error while inserting data");
+      res.status(400).send("Error while searching data");
     });
 });
 
