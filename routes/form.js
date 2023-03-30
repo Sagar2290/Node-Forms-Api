@@ -70,7 +70,7 @@ router.post("/user", (req, res, next) => {
     });
 });
 
-router.post("/search/:id", (req, res, next) => {
+router.get("/search/:id", (req, res, next) => {
   console.log(req.body);
   conn
     .connect()
